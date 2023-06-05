@@ -1,0 +1,17 @@
+{% extends 'admin/change_form.html' %}
+
+{% block admin_change_form_document_ready %}
+    {{ block.super }}
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+    <script id="django-admin-form-change-constants"
+            data-model-name="{{ opts.model_name }}">
+
+          function verifyPhoneNumber()
+        {
+        //alert('hiii');
+        $.getJSON("/admin/studentapp/verify_phonenumber/",{id: $("#idphone").val()}, function(j){
+                     alert(j.message);
+                 });
+        }
+    </script>
+{% endblock %}
