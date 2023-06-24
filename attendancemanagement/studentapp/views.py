@@ -24,3 +24,4 @@ def verify_phonenumber(request):
         res = {"message":"Student with phone exists..Please add another"}
     
     return HttpResponse(json.dumps(res), content_type='application/json')
+ 

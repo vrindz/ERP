@@ -1,12 +1,20 @@
 from django.contrib import admin
 from .forms import StudentDOB
-from .models import Students
+from .models import Students,CourseFees,FeeDetails,FeesReceipt
 from django.core.exceptions import MultipleObjectsReturned
 from django.utils.html import format_html
+from django.urls import NoReverseMatch
+from .models import *
+
 
 
 # Register your models here.
 class StudentAdminSite(admin.ModelAdmin,StudentDOB):
+    list_display = ("Student","phone","Enquiry_Source","Course","fees_link")
+    #list_filter = ("nextdate")
+
+     
+    
     readonly_fields = ("verifyphone",)
     
     fieldsets =(("General",{"fields":["Enquiry_Source"]}),
@@ -43,6 +51,17 @@ class StudentAdminSite(admin.ModelAdmin,StudentDOB):
                                     [
                                     "Studentcallstatus","nextdate","tostaff","Comments"
                   ]}),)
+                
+    def fees_link(self, obj):
+        try:
+            url = f"/admin/studentapp/feedetails/?Students"
+            link = f'<a href="{url}">Go</a>'
+            return format_html(link)
+        except NoReverseMatch:
+            return None
+
+    fees_link.short_description = 'Fees'
+           
     def save_model(self, request, obj, form, change):
         from django.core.exceptions import ObjectDoesNotExist
         if change == False:
@@ -74,4 +93,43 @@ class StudentAdminSite(admin.ModelAdmin,StudentDOB):
     change_form_template = "studentenquiryform.html"
     
     form = StudentDOB
-admin.site.register(Students,StudentAdminSite)    
+
+
+   
+    search_fields = ("Student","phone")
+      
+class CourseFeesAdmin(admin.ModelAdmin):
+    list_display = ("course", "fees_type", "amount",)
+
+    fieldsets = (
+        ('Fees Details', {
+            'fields': ('course', 'fees_type', 'amount','installment_period')
+        }),
+    )
+
+    def display_installment_period(self, obj):
+        return f"{obj.installment_period} months"
+
+    display_installment_period.short_description = 'Installment Period'
+class FeeDetailsAdmin(admin.ModelAdmin):
+    list_display = ('first_pay', 'first_pay_amount','payment','second_pay','second_pay_amount','payment','third_pay','third_pay_amount','payment')
+    list_filter = ('student',)
+
+    def payment(self, obj):
+        url = reverse('admin:studentapp_feesreceipt_add')  # Replace 'yourapp' with the actual name of your app
+        link = f'<a href="{url}?student_id={obj.student_id}">Pay</a>'
+        return format_html(link)
+
+    payment.short_description = 'Payment'
+
+class FeesReceiptAdmin(admin.ModelAdmin):
+    list_display = ('payment_date', 'paid_amount', 'receipt_number', 'payment_mode', 'description', 'collected_to_account')
+
+             
+admin.site.register(Students,StudentAdminSite)
+admin.site.register(CourseFees,CourseFeesAdmin)
+admin.site.register(FeeDetails,FeeDetailsAdmin)
+admin.site.register(FeesReceipt,FeesReceiptAdmin)
+     
+
+   

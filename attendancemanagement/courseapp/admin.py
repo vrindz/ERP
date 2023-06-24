@@ -4,6 +4,13 @@ from .models import Company,State,District,Branch,Enquirysource,FollowUpStatus,Q
 from django.contrib import admin
 from .forms import BatchForm
 from django.contrib.admin import AdminSite
+from django.contrib.auth.models import User,Group
+class customeuseradmin(admin.ModelAdmin):
+    list_display=['username','email','date_joined']
+    ordering=['username']
+class customegroupadmin(admin.ModelAdmin):
+    list_display=["name"]  
+    ordering=['name']
 class AttendanceAdminSite(AdminSite):
     def get_app_list(self, request):
         ordering = {
@@ -18,6 +25,12 @@ class AttendanceAdminSite(AdminSite):
             "Syllabus": 9,
             "Courses": 10,
             "Master Data": 11
+        }
+        appordering={
+            "courseapp":1,
+            "studentapp":2,
+            "Authentication and Authorization":3,
+            
         }
         app_dict = self._build_app_dict(request)
         # a.sort(key=lambda x: b.index(x[0]))
@@ -51,5 +64,7 @@ admin.site.register(Course,CourseAdmin)
 admin.site.register(Batch,BatchFormAdmin)
 admin.site.register(MasterData)
 admin.site.register(Syllabus)
+admin.site.register(User)
+admin.site.register(Group)
 
 

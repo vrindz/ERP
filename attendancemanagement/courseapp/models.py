@@ -4,7 +4,7 @@ from django.contrib.admin import AdminSite
 from datetime import datetime,timedelta
 from django.urls import reverse
 from django.contrib import admin
-from django.contrib.auth.models import User
+from django.contrib.auth.models import User,Group
 
 
 
@@ -13,11 +13,11 @@ from django.contrib.auth.models import User
 #Create your models here.
 class Master(models.Model):
     created_date = models.DateTimeField(auto_now_add=True)
-#    # isactive = models.BooleanField(default=True, verbose_name="Active")
+    isactive = models.BooleanField(default=True, verbose_name="Active")
     created_user = models.ForeignKey(User, null=True, blank=True, on_delete=models.CASCADE)
-    #  class Meta:
-    #     abstract = True
-    #     ordering = ['-isactive']
+    class Meta:
+        abstract = True
+        ordering = ['-isactive']
 class Company(models.Model):
     Company = models.CharField(max_length=100)
     Address1 = models.CharField(max_length=100,blank=True)
