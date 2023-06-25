@@ -2,6 +2,8 @@ from django.shortcuts import render
 from django.http import HttpResponse
 from .models import Students
 import json
+# from .forms import StudentForm
+
 
 
 # Create your views here.
@@ -25,3 +27,5 @@ def verify_phonenumber(request):
     
     return HttpResponse(json.dumps(res), content_type='application/json')
  
+
+
